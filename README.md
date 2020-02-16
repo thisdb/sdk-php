@@ -1,19 +1,24 @@
 # thisdb-php
 
+[![Latest Version](https://img.shields.io/github/release/thisdb/thisdb-php.svg?style=flat-square)](https://github.com/thisdb/thisdb-php/releases)
+
 Official PHP library for ThisDB
 
 Website and documentation: https://www.thisdb.com
 
-## Installation
-
-- Download the phar from the latest [release](https://github.com/thisdb/thisdb-php/releases)
-- Include in your application
+The cloud key/value database built from the ground up for serverless applications. It's fast, secure, cost effective, and is easy to integrate.
 
 ```
-require 'app.phar';
-
-$apiKey = '<your-api-key>';
-$thisDB = new ThisDB($apiKey);
+$thisDB = new \ThisDB\Client('<your-api-key>');
 
 echo $thisDB->get('<your-bucket>', '<your-key>');
+```
+
+## Installation
+
+The recommended way to install thisdb-php is through
+[Composer](https://getcomposer.org/).
+
+```bash
+composer require thisdb/thisdb-php
 ```
