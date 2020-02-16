@@ -1,7 +1,7 @@
 {
-    "name": "thisdb/thisdb-php",
+    "name": "thisdb/sdk-php",
     "type": "library",
-    "description": "Official PHP library for ThisDB",
+    "description": "Official ThisDB SDK for PHP",
     "license": "MIT",
     "authors": [
         {

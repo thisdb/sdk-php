@@ -1,8 +1,8 @@
-# thisdb-php-sdk
+# ThisDB SDK for PHP
 
-[![Latest Version](https://img.shields.io/github/release/thisdb/thisdb-php-sdk.svg?style=flat-square)](https://github.com/thisdb/thisdb-php-sdk/releases)
+[![Latest Version](https://img.shields.io/github/release/thisdb/php-sdk.svg?style=flat-square)](https://github.com/thisdb/php-sdk/releases)
 
-Official PHP SDK for ThisDB
+Official ThisDB SDK for PHP
 
 Website and documentation: https://www.thisdb.com
 
@@ -16,9 +16,9 @@ echo $thisDB->get('<your-bucket>', '<your-key>');
 
 ## Installation
 
-The recommended way to install thisdb-php is through
+The recommended way to install is through
 [Composer](https://getcomposer.org/).
 
 ```bash
-composer require thisdb/thisdb-php
+composer require thisdb/sdk-php
 ```

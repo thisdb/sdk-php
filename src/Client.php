@@ -2,7 +2,7 @@
 namespace ThisDB;
 
 /**
- * ThisDB PHP Client
+ * ThisDB PHP SDK
  * @package thisdb-php
  * @version 1.0.0
  * @author  https://www.thisdb.com
