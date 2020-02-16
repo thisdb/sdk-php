@@ -1,6 +1,6 @@
 # thisdb-php-sdk
 
-[![Latest Version](https://img.shields.io/github/release/thisdb/thisdb-php.svg?style=flat-square)](https://github.com/thisdb/thisdb-php/releases)
+[![Latest Version](https://img.shields.io/github/release/thisdb/thisdb-php-sdk.svg?style=flat-square)](https://github.com/thisdb/thisdb-php-sdk/releases)
 
 Official PHP SDK for ThisDB
 
