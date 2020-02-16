@@ -4,7 +4,7 @@ if (!class_exists('ThisDB')) {
   /**
    * ThisDB PHP Client
    * @package thisdb-php
-   * @version 1.0
+   * @version 1.0.0
    * @author  https://www.thisdb.com
    * @license http://www.opensource.org/licenses/mit-license.php MIT
    */
@@ -30,7 +30,7 @@ if (!class_exists('ThisDB')) {
      * @access public
      * @type string Current version number
      */
-    public $version = '1.0';
+    public $version = '1.0.0';
 
     /**
      * User Agent
