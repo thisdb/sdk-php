@@ -1,4 +1,4 @@
-# ThisDB SDK for PHP
+# ThisDB PHP SDK
 
 [![Latest Version](https://img.shields.io/github/release/thisdb/php-sdk.svg?style=flat-square)](https://github.com/thisdb/php-sdk/releases)
 
