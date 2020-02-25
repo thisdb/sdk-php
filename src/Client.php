@@ -120,6 +120,14 @@ class Client
     return self::methodPost('', '');
   }
 
+  public function listBucket($bucket, $format = "")
+  {
+    if ($format !== "") {
+      return self::methodGet($bucket, array('format' => $format));
+    }
+    return self::methodGet($bucket);
+  }
+
   public function updateBucket($bucket, $defaultTTL = "")
   {
     $this->get_bool = true;
