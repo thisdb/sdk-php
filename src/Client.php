@@ -93,6 +93,12 @@ class Client
       return self::methodPatch($bucket.'/'.$key, $value);
   }
 
+  public function delete($bucket, $key)
+  {
+    $this->get_bool = true;
+    return self::methodDelete($bucket.'/'.$key, '');
+  }
+
   public function createToken($bucket, $prefix, $permissions, $ttl)
   {
     $this->get_bool = false;
