@@ -84,7 +84,8 @@ class Client
 
   public function set($bucket, $key, $value)
   {
-      return self::code($bucket.'/'.$key, $value);
+      $this->get_bool = true;
+      return self::methodPost($bucket.'/'.$key, $value);
   }
 
   public function increment($bucket, $key, $value)
