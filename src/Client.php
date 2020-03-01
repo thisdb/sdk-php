@@ -140,10 +140,12 @@ class Client
 
   public function listBucket($args)
   {
-    if (isset($args['format'])) {
-      return self::methodGet($args['bucket'], array('format' => $args['format']));
+    $bucket = $args['bucket'];
+    unset($args['bucket']);
+    if (!empty($args)) {
+      return self::methodGet($bucket, $args);
     }
-    return self::methodGet($args['bucket']);
+    return self::methodGet($bucket);
   }
 
   public function updateBucket($args)
