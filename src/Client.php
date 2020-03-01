@@ -4,7 +4,7 @@ namespace ThisDB;
 /**
  * ThisDB PHP SDK
  * @package thisdb-php
- * @version 1.0.0
+ * @version 0.1.0
  * @author  https://www.thisdb.com
  * @license http://www.opensource.org/licenses/mit-license.php MIT
  */
@@ -17,6 +17,18 @@ class Client
    * @type string $apiKey ThisDB.com API key
    */
   private $apiKey = '';
+
+  /**
+   * Response headers
+   * @type array $response_headers Response headers
+   */
+  private $response_headers;
+
+  /**
+   * Default response format
+   * @type array $default_response_format Default response format
+   */
+  private $default_response_format = 'text';
 
   /**
    * API Endpoint
@@ -72,75 +84,81 @@ class Client
    * @param string $apiKey
    * @return void
    */
-  public function __construct($apiKey)
+  public function __construct($args)
   {
-    $this->apiKey = $apiKey;
+    $this->apiKey = $args['apiKey'];
+    if (isset($args['default_response_format'])) {
+      $this->default_response_format = $args['default_response_format'];
+    }
   }
 
-  public function get($bucket, $key)
+  public function get($args)
   {
-      return self::methodGet($bucket.'/'.$key);
+      if (isset($args['format'])) {
+        return self::methodGet($args['bucket'].'/'.$args['key'], array('format' => $args['format']));
+      }
+      return self::methodGet($args['bucket'].'/'.$args['key']);
   }
 
-  public function set($bucket, $key, $value)
+  public function set($args)
   {
       $this->get_bool = true;
-      return self::methodPost($bucket.'/'.$key, $value);
+      return self::methodPost($args['bucket'].'/'.$args['key'], $args['value']);
   }
 
-  public function increment($bucket, $key, $value)
+  public function increment($args)
   {
       $this->get_bool = false;
-      return self::methodPatch($bucket.'/'.$key, $value);
+      return self::methodPatch($args['bucket'].'/'.$args['key'], $args['value']);
   }
 
-  public function delete($bucket, $key)
+  public function delete($args)
   {
     $this->get_bool = true;
-    return self::methodDelete($bucket.'/'.$key, '');
+    return self::methodDelete($args['bucket'].'/'.$args['key'], '');
   }
 
-  public function createToken($bucket, $prefix, $permissions, $ttl)
+  public function createToken($args)
   {
     $this->get_bool = false;
     return self::methodPost('tokens', array(
-      'bucket' => $bucket,
-      'prefix' => $prefix,
-      'permissions' => $permissions,
-      'ttl' => $ttl
+      'bucket' => $args['bucket'],
+      'prefix' => $args['prefix'],
+      'permissions' => $args['permissions'],
+      'ttl' => $args['ttl']
     ));
   }
 
-  public function createBucket($defaultTTL = "")
+  public function createBucket($args)
   {
     $this->get_bool = false;
-    if ($defaultTTL !== "") {
-      return self::methodPost('', array('default_ttl' => $defaultTTL));
+    if (isset($args['defaultTTL'])) {
+      return self::methodPost('', array('default_ttl' => $args['defaultTTL']));
     }
     return self::methodPost('', '');
   }
 
-  public function listBucket($bucket, $format = "")
+  public function listBucket($args)
   {
-    if ($format !== "") {
-      return self::methodGet($bucket, array('format' => $format));
+    if (isset($args['format'])) {
+      return self::methodGet($args['bucket'], array('format' => $args['format']));
     }
-    return self::methodGet($bucket);
+    return self::methodGet($args['bucket']);
   }
 
-  public function updateBucket($bucket, $defaultTTL = "")
+  public function updateBucket($args)
   {
     $this->get_bool = true;
-    if ($defaultTTL !== "") {
-      return self::methodPatch($bucket, array('default_ttl' => $defaultTTL));
+    if (isset($args['defaultTTL'])) {
+      return self::methodPatch($args['bucket'], array('default_ttl' => $args['defaultTTL']));
     }
-    return self::methodPatch($bucket, '');
+    return self::methodPatch($args['bucket'], '');
   }
 
-  public function deleteBucket($bucket)
+  public function deleteBucket($args)
   {
     $this->get_bool = true;
-    return self::methodDelete($bucket, '');
+    return self::methodDelete($args['bucket'], '');
   }
 
   /**
@@ -148,7 +166,7 @@ class Client
    * @param string $method
    * @param mixed $args
    */
-  public function methodGet($method, $args = FALSE)
+  private function methodGet($method, $args = FALSE)
   {
       $this->request_type = 'GET';
       $this->get_code = false;
@@ -162,7 +180,7 @@ class Client
    * @param mixed $args
    * @return mixed if no exceptions thrown
    * */
-  public function code($method, $args = FALSE)
+  private function code($method, $args = FALSE)
   {
       $this->request_type = 'POST';
       $this->get_code = true;
@@ -216,6 +234,14 @@ class Client
       if ($this->debug)
           echo $this->request_type . ' ' . $url . PHP_EOL;
 
+      $requestHeaders = array('X-Api-Key: '.$this->apiKey);
+
+      if (!isset($args['format']) && $this->default_response_format !== 'text') {
+        if ($this->default_response_format === 'json') {
+          $requestHeaders[] = 'Accept: application/json';
+        }
+      }
+
       $_defaults = array(
           CURLOPT_USERAGENT => sprintf('%s v%s (%s)', $this->agent, $this->version, 'https://www.thisdb.com'),
           CURLOPT_HEADER => 0,
@@ -228,7 +254,8 @@ class Client
           CURLOPT_RETURNTRANSFER => 1,
           CURLOPT_FORBID_REUSE => 1,
           CURLOPT_TIMEOUT => 30,
-          CURLOPT_HTTPHEADER => array('X-Api-Key: '.$this->apiKey)
+          CURLOPT_HTTPHEADER => $requestHeaders,
+          CURLOPT_HEADERFUNCTION => array($this, '_processResponseHeaders')
       );
 
       switch ($this->request_type) {
@@ -304,8 +331,25 @@ class Client
           return ($this->response_code === 200) ? true : false;
       }
 
+      // Decode if response is JSON
+      if (strpos($this->response_headers['content-type'][0], 'application/json') !== false) {
+        $response = json_decode($response);
+      }
+
       return $response;
   }
+
+  private function _processResponseHeaders($curl, $header)
+  { 
+    $len = strlen($header);
+    $header = explode(':', $header, 2);
+    if (count($header) < 2) // ignore invalid headers
+      return $len;
+
+    $this->response_headers[strtolower(trim($header[0]))][] = trim($header[1]);
+
+    return $len;
+  } 
 
   public function getCode()
   {
