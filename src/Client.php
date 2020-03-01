@@ -4,7 +4,7 @@ namespace ThisDB;
 /**
  * ThisDB PHP SDK
  * @package thisdb-php
- * @version 0.1.0
+ * @version 0.1.1
  * @author  https://www.thisdb.com
  * @license http://www.opensource.org/licenses/mit-license.php MIT
  */
@@ -42,7 +42,7 @@ class Client
    * @access public
    * @type string Current version number
    */
-  public $version = '1.0.0';
+  public $version = '0.1.1';
 
   /**
    * User Agent
