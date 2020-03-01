@@ -9,9 +9,9 @@ Website and documentation: https://www.thisdb.com
 The cloud key/value database built from the ground up for serverless applications. It's fast, secure, cost effective, and is easy to integrate.
 
 ```php
-$thisDB = new \ThisDB\Client('<your-api-key>');
+$thisDB = new \ThisDB\Client(['apiKey' => '<your-api-key>']);
 
-echo $thisDB->get('<your-bucket>', '<your-key>');
+echo $thisDB->get(['bucket' => '<your-bucket>', 'key' => '<your-key>']);
 ```
 
 ## Installation
